@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vijay.dto.QuoteRequestDTO;
 import com.vijay.entity.InteriorLead;
+import com.vijay.entity.QuoteRequest;
+import com.vijay.repository.QuoteRequestRepository;
 import com.vijay.service.EmailService;
 import com.vijay.service.InteriorLeadService;
 
@@ -34,6 +37,9 @@ public class EmailController {
     
     @Autowired
     private InteriorLeadService leadService;
+    
+    @Autowired
+    private QuoteRequestRepository quoteRequestRepository;
     
 
 //    @PostMapping("/submit-quote")
@@ -59,25 +65,46 @@ public class EmailController {
 
     
     // CREATE
+//    @PostMapping("/submit-quote")
+//    public ResponseEntity<InteriorLead> createLead(@RequestBody InteriorLead lead) {
+//        System.out.println(lead);
+//
+//        try {
+//            // Save the lead
+//            InteriorLead savedLead = leadService.saveLead(lead);
+//
+//            // Send thank-you email
+//            emailService.sendThankYouEmail(savedLead.getEmail(), savedLead.getName());
+//
+//            // Return 200 OK with the saved lead
+//            return ResponseEntity.ok(savedLead);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace(); // Log the exception
+//            return ResponseEntity.internalServerError().body(null); // Return 500 with null body
+//        }
+//    }
+    
+    
     @PostMapping("/submit-quote")
-    public ResponseEntity<InteriorLead> createLead(@RequestBody InteriorLead lead) {
-        System.out.println(lead);
+    public ResponseEntity<String> submitQuote(@RequestBody QuoteRequestDTO dto) {
+    	System.out.println(dto);
+        QuoteRequest quote = new QuoteRequest();
+        quote.setName(dto.getName());
+        quote.setEmail(dto.getEmail());
+        quote.setPhone(dto.getPhone());
+        quote.setPropertyName(dto.getPropertyName());
+        quote.setWhatsappUpdates(dto.isWhatsappUpdates());
+        
+               
 
-        try {
-            // Save the lead
-            InteriorLead savedLead = leadService.saveLead(lead);
-
-            // Send thank-you email
-            emailService.sendThankYouEmail(savedLead.getEmail(), savedLead.getName());
-
-            // Return 200 OK with the saved lead
-            return ResponseEntity.ok(savedLead);
-
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-            return ResponseEntity.internalServerError().body(null); // Return 500 with null body
-        }
+        quoteRequestRepository.save(quote);
+        return ResponseEntity.ok("Quote submitted successfully");
     }
+    
+    
+    
+    
 
     // READ ALL
     @GetMapping("/leads")
