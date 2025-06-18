@@ -19,7 +19,7 @@ import com.vijay.entity.InteriorLead;
 import com.vijay.entity.QuoteRequest;
 import com.vijay.repository.QuoteRequestRepository;
 import com.vijay.service.EmailService;
-import com.vijay.service.InteriorLeadService;
+
 
 @RestController
 @RequestMapping("/api")
@@ -35,8 +35,7 @@ public class EmailController {
     private JavaMailSender mailSender;
     
     
-    @Autowired
-    private InteriorLeadService leadService;
+   
     
     @Autowired
     private QuoteRequestRepository quoteRequestRepository;
@@ -102,39 +101,57 @@ public class EmailController {
         return ResponseEntity.ok("Quote submitted successfully");
     }
     
+//     READ ALL
+  @GetMapping("/leads")
+  public ResponseEntity<List<QuoteRequest>> getAllLeads() {
+      List<QuoteRequest> leads = quoteRequestRepository.findAll();
+      System.out.println(leads);
+      return ResponseEntity.ok(leads);
+  }
     
     
+  @DeleteMapping("/delete-quote/{id}")
+  public ResponseEntity<String> deleteQuote(@PathVariable Long id) {
+      if (quoteRequestRepository.existsById(id)) {
+          quoteRequestRepository.deleteById(id);
+          return ResponseEntity.ok("Quote deleted successfully with ID: " + id);
+      } else {
+          return ResponseEntity.status(404).body("Quote not found with ID: " + id);
+      }
+  }
+
     
 
-    // READ ALL
-    @GetMapping("/leads")
-    public ResponseEntity<List<InteriorLead>> getAllLeads() {
-        List<InteriorLead> leads = leadService.getAllLeads();
-        return ResponseEntity.ok(leads);
-    }
-
-    // READ BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<InteriorLead> getLeadById(@PathVariable Long id) {
-        InteriorLead lead = leadService.getLeadById(id);
-        if (lead != null) {
-            return ResponseEntity.ok(lead);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // DELETE
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLead(@PathVariable Long id) {
-        InteriorLead lead = leadService.getLeadById(id);
-        if (lead != null) {
-            leadService.deleteLead(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    // READ ALL
+//    @GetMapping("/leads")
+//    public ResponseEntity<List<InteriorLead>> getAllLeads() {
+//        List<InteriorLead> leads = leadService.getAllLeads();
+//        System.out.println(leads);
+//        return ResponseEntity.ok(leads);
+//    }
+//
+//    // READ BY ID
+//    @GetMapping("/{id}")
+//    public ResponseEntity<InteriorLead> getLeadById(@PathVariable Long id) {
+//        InteriorLead lead = leadService.getLeadById(id);
+//        if (lead != null) {
+//            return ResponseEntity.ok(lead);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+//
+//    // DELETE
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteLead(@PathVariable Long id) {
+//        InteriorLead lead = leadService.getLeadById(id);
+//        if (lead != null) {
+//            leadService.deleteLead(id);
+//            return ResponseEntity.noContent().build(); // 204 No Content
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 
 }

@@ -22,6 +22,7 @@ public class AdminLoginController {
 
     @PostMapping("/admin/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    	System.out.print("entered in login method");
         if (ADMIN_USERNAME.equals(loginRequest.getUsername()) &&
             ADMIN_PASSWORD.equals(loginRequest.getPassword())) {
 
