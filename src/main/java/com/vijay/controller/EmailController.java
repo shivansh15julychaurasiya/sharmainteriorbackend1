@@ -97,8 +97,11 @@ public class EmailController {
         
                
 
-        quoteRequestRepository.save(quote);
-        return ResponseEntity.ok("Quote submitted successfully");
+       QuoteRequest q= quoteRequestRepository.save(quote);
+        
+//      // Send thank-you email
+      emailService.sendThankYouEmail(q.getEmail(), q.getName());
+        return ResponseEntity.ok("Quote submitted successfully"+q);
     }
     
 //     READ ALL
